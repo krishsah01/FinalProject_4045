@@ -75,6 +75,17 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>11.7.2</version>
+                <configuration>
+                    <url> jdbc:mysql://localhost:3306/roomieRadarData?createDatabaseIfNotExist=true</url>
+                    <user> root</user>
+                    <password>P@ssword</password>
+                    <cleanDisabled>false</cleanDisabled>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
