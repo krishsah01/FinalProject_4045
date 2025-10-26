@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Events</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<h1>Events</h1>
+<button>Add Event</button>
+<table class="table">
+    <tr><th>Name</th><th>Date</th><th>Actions</th></tr>
+    <tr>
+        <td>Sample Event</td>
+        <td>2025-10-26</td>
+        <td>
+            <button>Edit</button>
+            <button>Delete</button>
+        </td>
+    </tr>
+</table>
+<a th:href="@{/}">Back to Home</a>
+</body>
+</html>
