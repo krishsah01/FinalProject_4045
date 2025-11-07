@@ -11,9 +11,49 @@ public class HomeController {
         return "index";
     }
 
+    @GetMapping("/bills")
+    public String bills() {
+        return "bills";
+    }
+
+    @GetMapping("/bills/add")
+    public String addBill() {
+        return "add-bill";
+    }
+
+    @GetMapping("/chores")
+    public String chores() {
+        return "chores";
+    }
+
+    @GetMapping("/chores/add")
+    public String addChore() {
+        return "add-chore";
+    }
+
     @GetMapping("/events")
     public String events() {
         return "events";
+    }
+
+    @GetMapping("/events/add")
+    public String addEvent() {
+        return "add-event";
+    }
+
+    @GetMapping("/events/edit")
+    public String editEvent() {
+        return "edit-event";
+    }
+
+    @GetMapping("/events/details")
+    public String eventDetails() {
+        return "event-details";
+    }
+
+    @GetMapping("/calendar")
+    public String calendar() {
+        return "calendar";
     }
 
     @GetMapping("/users")
