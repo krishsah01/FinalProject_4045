@@ -14,37 +14,43 @@ import java.util.Optional;
 @RequestMapping("/api/calendaritems")
 public class CalendarItemController {
     private final CalendarItemRepository repo;
-    public CalendarItemController(CalendarItemRepository repo) {this.repo = repo;}
+    public CalendarItemController(CalendarItemRepository repo){ this.repo = repo; }
 
+    // 1) All items (fallback in calendar.js)
     @GetMapping
-    public List<CalendarItem> list(
-            @RequestParam(required = false) Long householdId,
-            @RequestParam(required = false) Instant start,
-            @RequestParam(required = false) Instant end
-    ){
-        if (householdId != null && start != null && end != null) {
-            return repo.findByHouseholdIdAndDateStartBetween(householdId, start, end);
-        }
+    public List<CalendarItem> getAll(
+            @RequestParam(value = "householdId", required = false) Long householdId) {
         if (householdId != null) return repo.findByHouseholdId(householdId);
         return repo.findAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CalendarItem> get(@PathVariable Long id){
-        return repo.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    // 2) Range endpoint (primary call in calendar.js)
+    @GetMapping("/range")
+    public List<CalendarItem> getByRange(
+            @RequestParam("start") @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) Instant start,
+            @RequestParam("end")   @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) Instant end,
+            @RequestParam(value = "householdId", required = false) Long householdId) {
+        if (householdId != null) {
+            return repo.findByHouseholdIdAndDateStartBetween(householdId, start, end);
+        }
+        // Prefer a repo method for this instead of in-memory filtering:
+        return repo.findByDateStartBetween(start, end);
     }
+
     @PostMapping
     public ResponseEntity<CalendarItem> create(@RequestBody CalendarItem calendarItem){
-        if (calendarItem.getDateStart() == null || calendarItem.getCreator() == null || calendarItem.getId() == null || calendarItem.getName() == null) {
+        if (calendarItem.getDateStart() == null || calendarItem.getCreator() == null || calendarItem.getName() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(repo.save(calendarItem));
     }
 
-    @PutMapping
-    public ResponseEntity<CalendarItem> update(@PathVariable Long id, @RequestBody CalendarItem incoming) {
+    @PutMapping("/{id}")
+    public ResponseEntity<CalendarItem> update(@PathVariable Long id,
+                                               @RequestBody CalendarItem incoming) {
         Optional<CalendarItem> existing = repo.findById(id);
         if (existing.isEmpty()) return ResponseEntity.notFound().build();
+
         CalendarItem e = existing.get();
         if (incoming.getName() != null) e.setName(incoming.getName());
         e.setDescription(incoming.getDescription());
@@ -52,7 +58,7 @@ public class CalendarItemController {
         e.setDateEnd(incoming.getDateEnd());
         e.setRepeatDuration(incoming.getRepeatDuration());
         if (incoming.getCreator() != null) e.setCreator(incoming.getCreator());
-        if (incoming.getId() != null) e.setId(incoming.getId());
+
         return ResponseEntity.ok(repo.save(e));
     }
 
@@ -62,4 +68,6 @@ public class CalendarItemController {
         repo.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+
 }

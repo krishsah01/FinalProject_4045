@@ -15,11 +15,48 @@
 </header>
 
 <main class="container flex-grow-1 mt-5">
-    <h2 class="mb-4 text-center">Your Calendar</h2>
+    <!-- optional household context later -->
+    <div id="calendar-root" th:attr="data-household-id=${householdId}">
+    <div class="row g-4">
+        <!-- Upcoming -->
+        <section class="col-12 col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="h5 mb-0">Upcoming</h2>
+                    <a th:href="@{/events}" class="btn btn-sm btn-outline-primary">Manage</a>
+                </div>
+                <ul class="list-group list-group-flush" id="calendar-upcoming">
+                    <!-- Filled by /js/calendar.js -->
+                </ul>
+            </div>
+        </section>
 
-    <!-- Placeholder calendar -->
-    <div class="alert alert-info text-center">
-        Calendar integration coming soon!
+        <!-- This Month -->
+        <section class="col-12 col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="h5 mb-0">This Month</h2>
+                    <a th:href="@{/add-event}" class="btn btn-sm btn-primary">Add Item</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Repeat</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                            <tbody id="calendar-month-body">
+                            <!-- Filled by /js/calendar.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
 </main>
 
@@ -36,5 +73,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/js/script.js}"></script>
+<script th:src="@{/js/calendar.js}"></script>
 </body>
 </html>
