@@ -30,4 +30,9 @@ public class EventAttendee {
     @JoinColumn(name = "householdId", nullable = false)
     private Household household;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "eventId")
+    private Event event;
+
 }

@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
+
 @Getter
 @Setter
 @Entity
@@ -31,5 +33,8 @@ public class Event {
 
     @Column(name = "description")
     private String description;
+
+    @Column(name="eventtime", nullable = false)
+    private Instant eventTime;
 
 }
