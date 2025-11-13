@@ -52,6 +52,18 @@ RoomieRadar helps roommates coordinate shared living by managing chores, splitti
 
 ---
 
+## 🔐 Authentication & Login
+RoomieRadar uses **Spring Security** for user authentication:
+
+- **Signup:** New users register at `/signup` with username, email, and password
+- **Login:** Users authenticate at `/login` using their username and password
+- **Security:** All application pages require authentication; unauthenticated users are redirected to login
+- **Session Management:** Users remain logged in until they explicitly logout at `/logout`
+
+**Configuration:** Hibernate naming strategy preserves database column names (camelCase) to match MySQL schema.
+
+---
+
 ## 📅 Project Timeline
 | Task | Deadline |
 |------|----------|
