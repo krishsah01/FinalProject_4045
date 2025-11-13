@@ -15,22 +15,39 @@
 </header>
 
 <main class="container flex-grow-1 mt-5">
-    <h2 class="mb-4 text-center">Household Members</h2>
-    <div class="text-end mb-3">
-        <a th:href="@{/users/add}" class="btn btn-primary">Add User</a>
+    <div class="d-flex justify-content-between align-items-center">
+        <h2 class="mb-4">Household Members</h2>
+        <div>
+            <form method="get" action="/users" class="d-flex align-items-center gap-2">
+                <label for="householdId" class="visually-hidden">Household</label>
+                <select id="householdId" class="form-select" name="householdId" th:if="${myHouseholds}" th:disabled="${#lists.isEmpty(myHouseholds)}">
+                    <option th:each="h: ${myHouseholds}" th:value="${h.id}" th:selected="${currentHousehold != null and h.id == currentHousehold.id}" th:text="${h.name}"></option>
+                </select>
+                <button class="btn btn-outline-primary" type="submit" th:if="${myHouseholds}">Switch</button>
+                <a th:href="@{/users/add(householdId=${currentHousehold != null ? currentHousehold.id : null})}" class="btn btn-primary">Add User</a>
+            </form>
+        </div>
     </div>
 
-    <table class="table table-striped">
+    <div th:if="${message}" class="alert alert-success" th:text="${message}">User added</div>
+
+    <div th:if="${currentHousehold == null}" class="alert alert-warning">No household selected. Join or create one first.</div>
+
+    <table class="table table-striped" th:if="${currentHousehold != null}">
         <thead>
         <tr>
-            <th>Name</th>
+            <th>Username</th>
             <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
         </tr>
         </thead>
-        <tbody id="users-table">
-        <!-- Placeholder rows will be filled by JS -->
+        <tbody>
+        <tr th:each="m: ${members}">
+            <td th:text="${m.username}">username</td>
+            <td th:text="${m.email}">email</td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(members)}">
+            <td colspan="2" class="text-center text-muted">No members yet</td>
+        </tr>
         </tbody>
     </table>
 </main>

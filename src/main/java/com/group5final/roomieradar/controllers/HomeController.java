@@ -55,9 +55,4 @@ public class HomeController {
     public String calendar() {
         return "calendar";
     }
-
-    @GetMapping("/users")
-    public String users() {
-        return "users";
-    }
 }

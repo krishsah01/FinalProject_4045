@@ -121,38 +121,46 @@ public class UsersController {
 
     @PostMapping("/users/add")
     public String addUser(@RequestParam("username") String newUsername,
-                          @RequestParam("email") String email,
-                          @RequestParam("password") String password,
-                          @RequestParam(value = "role", required = false) String role,
+                          @RequestParam(value = "email", required = false) String email,
                           @RequestParam("householdId") Long householdId,
                           Model model) {
-        // Validate
-        if (userRepository.findByUsername(newUsername).isPresent()) {
-            model.addAttribute("error", "Username already exists");
-            model.addAttribute("household", householdRepository.findById(householdId).orElse(null));
-            return "add-user";
-        }
+        // Validate target household
         Household household = householdRepository.findById(householdId).orElse(null);
         if (household == null) {
             model.addAttribute("error", "Selected household not found");
             return "add-user";
         }
 
-        // Create user
-        User user = new User();
-        user.setUsername(newUsername);
-        user.setEmail(email);
-        user.setPassword(password); // plain per current policy
-        user.setIsAdmin("Admin".equalsIgnoreCase(role));
-        user = userRepository.save(user);
+        // Find existing user by username
+        Optional<User> existingOpt = userRepository.findByUsername(newUsername);
+        User user;
+        if (existingOpt.isPresent()) {
+            user = existingOpt.get();
+        } else {
+            // Creating a new user: username must be unique (enforced here)
+            // Generate a temporary password since DB column is NOT NULL but we don't require input
+            String generatedPassword = "changeme" + UUID.randomUUID().toString().substring(0, 6);
+            user = new User();
+            user.setUsername(newUsername);
+            user.setEmail(email != null ? email : newUsername + "@example.com");
+            user.setPassword(generatedPassword);
+            // Remove admin logic: treat every user as admin the same; set true to neutralize any checks
+            user.setIsAdmin(true);
+            user = userRepository.save(user);
+        }
 
-        // Link user to the household via junction table
-        HouseholdMember link = new HouseholdMember();
-        link.setHouseholdId(householdId);
-        link.setUserId(user.getId());
-        householdMemberRepository.save(link);
-
-        return "redirect:/users?householdId=" + householdId + "&msg=User%20added";
+        // Prevent duplicate membership links
+        final Long userId = user.getId();
+        boolean alreadyMember = householdMemberRepository.findByHouseholdId(householdId).stream()
+                .anyMatch(hm -> Objects.equals(hm.getUserId(), userId));
+        if (!alreadyMember) {
+            HouseholdMember link = new HouseholdMember();
+            link.setHouseholdId(householdId);
+            link.setUserId(userId);
+            householdMemberRepository.save(link);
+            return "redirect:/users?householdId=" + householdId + "&msg=User%20added";
+        } else {
+            return "redirect:/users?householdId=" + householdId + "&msg=User%20already%20in%20household";
+        }
     }
 }
-
