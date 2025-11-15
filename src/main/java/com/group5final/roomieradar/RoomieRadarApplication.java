@@ -1,5 +1,7 @@
 package com.group5final.roomieradar;
 
+import com.group5final.roomieradar.services.user.UserService;
+import org.springframework.context.ApplicationContext;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -7,7 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class RoomieRadarApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(RoomieRadarApplication.class, args);
+        ApplicationContext context = SpringApplication.run(RoomieRadarApplication.class, args);
+        var userService = context.getBean(UserService.class);
     }
 
 }
