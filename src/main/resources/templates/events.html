@@ -20,14 +20,12 @@
         <a th:href="@{/events/add}" class="btn btn-primary">Add Event</a>
     </div>
 
-    <!-- Event List (placeholder) -->
+    <!-- Event List -->
     <div class="list-group">
-        <a th:href="@{/events/1}" class="list-group-item list-group-item-action">
-            Laundry Day - 2025-11-10 10:00 AM
-        </a>
-        <a th:href="@{/events/2}" class="list-group-item list-group-item-action">
-            Grocery Shopping - 2025-11-12 5:00 PM
-        </a>
+        <a th:each="event: ${events}"
+           th:text="${event.name} + ' - ' + ${event.eventTime}"
+           th:href="@{/events/details/{id}}"
+           class="list-group-item list-group-item-action"></a>
     </div>
 </main>
 

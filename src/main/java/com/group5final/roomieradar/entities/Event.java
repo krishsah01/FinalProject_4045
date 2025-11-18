@@ -1,12 +1,18 @@
 package com.group5final.roomieradar.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.Instant;
 
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "event", schema = "roomieRadarData")
 public class Event {
     @Id
@@ -27,5 +33,8 @@ public class Event {
 
     @Column(name = "description")
     private String description;
+
+    @Column(name="eventtime", nullable = false)
+    private Instant eventTime;
 
 }

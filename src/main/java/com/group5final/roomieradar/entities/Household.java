@@ -1,12 +1,16 @@
 package com.group5final.roomieradar.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "household", schema = "roomieRadarData")
 public class Household {
     @Id
