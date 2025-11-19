@@ -149,5 +149,16 @@ Storyboard mockups will be created using **Figma/InVision**.
 
 ---
 
+## 🏠 Household Flow (Current Implementation)
+- After login, if you have no household you can visit `/household` (or any gated page will redirect you there) to Join or Create.
+- Join: supply existing household name + password.
+- Create: choose a unique household name + password.
+- Once joined, the household page shows basic info and a member list (all users sharing that household).
+- Core feature pages (bills, chores, events, calendar) are gated until membership exists.
+
+> Note: Legacy `users` management pages were deprecated in favor of the consolidated `/household` page and the single-household-per-user model.
+
+---
+
 ## 📜 License
-This project is developed for **academic purposes** (University of Cincinnati, IT 4045C). License terms can be updated if the project is extended beyond coursework.  
+This project is developed for **academic purposes** (University of Cincinnati, IT 4045C). License terms can be updated if the project is extended beyond coursework.

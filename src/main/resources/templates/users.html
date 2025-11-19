@@ -17,16 +17,7 @@
 <main class="container flex-grow-1 mt-5">
     <div class="d-flex justify-content-between align-items-center">
         <h2 class="mb-4">Household Members</h2>
-        <div>
-            <form method="get" action="/users" class="d-flex align-items-center gap-2">
-                <label for="householdId" class="visually-hidden">Household</label>
-                <select id="householdId" class="form-select" name="householdId" th:if="${myHouseholds}" th:disabled="${#lists.isEmpty(myHouseholds)}">
-                    <option th:each="h: ${myHouseholds}" th:value="${h.id}" th:selected="${currentHousehold != null and h.id == currentHousehold.id}" th:text="${h.name}"></option>
-                </select>
-                <button class="btn btn-outline-primary" type="submit" th:if="${myHouseholds}">Switch</button>
-                <a th:href="@{/users/add(householdId=${currentHousehold != null ? currentHousehold.id : null})}" class="btn btn-primary">Add User</a>
-            </form>
-        </div>
+        <a th:href="@{/users/add(householdId=${currentHousehold != null ? currentHousehold.id : null})}" class="btn btn-primary">Add User</a>
     </div>
 
     <div th:if="${message}" class="alert alert-success" th:text="${message}">User added</div>
@@ -67,3 +58,5 @@
 <script th:src="@{/js/script.js}"></script>
 </body>
 </html>
+
+<!-- Deprecated: users.html replaced by household.html -->
