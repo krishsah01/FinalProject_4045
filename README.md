@@ -161,4 +161,18 @@ Storyboard mockups will be created using **Figma/InVision**.
 ---
 
 ## 📜 License
-This project is developed for **academic purposes** (University of Cincinnati, IT 4045C). License terms can be updated if the project is extended beyond coursework.
+This project is developed for **academic purposes** (University of Cincinnati, IT 4045C). License terms can be updated if the project is extended beyond coursework.  
+
+---
+
+## To run
+In intellij, or whatever IDE you use change the username, and password of the MYSQL user sections to your local username and password.
+These files are: 
+    pom.xml lines 83, and 84
+    application.properties lines 4 and 5
+
+Once complete, use the flyway:migrate tool in maven to build the database.
+
+If not already, connect to the MYSQL localhost database in the database manager.
+
+Run the program from the IDE run option.
