@@ -52,6 +52,18 @@ RoomieRadar helps roommates coordinate shared living by managing chores, splitti
 
 ---
 
+## 🔐 Authentication & Login
+RoomieRadar uses **Spring Security** for user authentication:
+
+- **Signup:** New users register at `/signup` with username, email, and password
+- **Login:** Users authenticate at `/login` using their username and password
+- **Security:** All application pages require authentication; unauthenticated users are redirected to login
+- **Session Management:** Users remain logged in until they explicitly logout at `/logout`
+
+**Configuration:** Hibernate naming strategy preserves database column names (camelCase) to match MySQL schema.
+
+---
+
 ## 📅 Project Timeline
 | Task | Deadline |
 |------|----------|
@@ -134,6 +146,17 @@ Storyboard mockups will be created using **Figma/InVision**.
 - **Sprint Planning:** Scrum Master decides stories for each sprint  
 - **Sprint Tasks:** Tracked in GitHub Project Board  
 - **Milestone Linking:** Each task linked to GitHub milestones  
+
+---
+
+## 🏠 Household Flow (Current Implementation)
+- After login, if you have no household you can visit `/household` (or any gated page will redirect you there) to Join or Create.
+- Join: supply existing household name + password.
+- Create: choose a unique household name + password.
+- Once joined, the household page shows basic info and a member list (all users sharing that household).
+- Core feature pages (bills, chores, events, calendar) are gated until membership exists.
+
+> Note: Legacy `users` management pages were deprecated in favor of the consolidated `/household` page and the single-household-per-user model.
 
 ---
 

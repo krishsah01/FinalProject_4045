@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RoomieRadar | Household</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+<header class="bg-primary text-white text-center py-3 shadow-sm">
+  <h1 class="fs-3 mb-0">RoomieRadar</h1>
+  <p class="mb-0 small opacity-75">Household</p>
+</header>
+
+<main class="container my-4 flex-grow-1">
+  <div th:if="${warning}" class="alert alert-warning" th:text="${warning}"></div>
+  <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+  <div th:if="${me != null and me.household == null}">
+    <div class="row g-4">
+      <div class="col-12 col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Join a household</h5>
+            <form method="post" action="/household/join">
+              <div class="mb-3">
+                <label class="form-label" for="name">Household Name</label>
+                <input class="form-control" id="name" name="name" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="password">Password</label>
+                <input class="form-control" id="password" name="password" type="password" required />
+              </div>
+              <button class="btn btn-primary" type="submit">Join</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Create a household</h5>
+            <form method="post" action="/household/create">
+              <div class="mb-3">
+                <label class="form-label" for="newname">Household Name</label>
+                <input class="form-control" id="newname" name="name" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="newpassword">Password</label>
+                <input class="form-control" id="newpassword" name="password" type="password" required />
+              </div>
+              <button class="btn btn-success" type="submit">Create</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div th:if="${me != null and me.household != null}">
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h5 class="card-title" th:text="${me.household.name}">Household Name</h5>
+        <p class="text-muted mb-2">Members (<span th:text="${membersCount}">0</span>)</p>
+        <ul class="list-group mb-3" th:if="${membersCount > 0}">
+          <li class="list-group-item" th:each="u : ${members}" th:text="${u.username}">member</li>
+        </ul>
+        <div th:if="${membersCount == 0}" class="alert alert-info mb-3">No members yet.</div>
+        <a class="btn btn-outline-primary" href="/">Go to Dashboard</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<nav class="navbar fixed-bottom bg-white border-top shadow-sm">
+  <div class="container d-flex justify-content-around">
+    <a th:href="@{/}" class="nav-link text-secondary">🏠</a>
+    <a th:href="@{/bills}" class="nav-link text-secondary">💰</a>
+    <a th:href="@{/chores}" class="nav-link text-secondary">🧹</a>
+    <a th:href="@{/events}" class="nav-link text-secondary">📅</a>
+    <a th:href="@{/calendar}" class="nav-link text-secondary">🗓️</a>
+    <a th:href="@{/household}" class="nav-link text-secondary">👥</a>
+    <a th:href="@{/logout}" class="nav-link text-danger">🚪</a>
+  </div>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/script.js}"></script>
+</body>
+</html>

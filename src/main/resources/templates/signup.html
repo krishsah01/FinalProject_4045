@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - RoomieRadar</title>
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <div class="logo-icon">≡</div>
+            RoomieRadar
+        </div>
+        <a href="/login" class="login-link">Log In</a>
+    </nav>
+
+    <div class="container">
+        <div class="signup-box">
+            <h1>Create an account</h1>
+            <p class="subtitle">Join RoomieRadar to manage your household</p>
+
+            <div th:if="${error}" class="alert alert-error">
+                <span th:text="${error}">Error occurred</span>
+            </div>
+
+            <form action="/auth/signup" method="post" id="signupForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Choose a username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create a password" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Household</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="householdAction" value="join" id="joinHousehold" checked>
+                            <span>Join existing household</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="householdAction" value="create" id="createHousehold">
+                            <span>Create new household</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="householdAction" value="skip" id="skipHousehold">
+                            <span>Skip for now</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="joinHouseholdFields" class="household-fields">
+                    <div class="form-group">
+                        <label for="householdId">Select Household</label>
+                        <select id="householdId" name="householdId" class="form-select">
+                            <option value="">-- Select a household --</option>
+                            <option th:each="household : ${households}"
+                                    th:value="${household.id}"
+                                    th:text="${household.name}"
+                                    th:attr="data-name=${household.name}">
+                            </option>
+                        </select>
+                    </div>
+                    <input type="hidden" id="householdName" name="householdName">
+                    <div class="form-group">
+                        <label for="householdPassword">Household Password</label>
+                        <input type="password" id="householdPassword" name="householdPassword"
+                               placeholder="Enter household password">
+                    </div>
+                </div>
+
+                <div id="createHouseholdFields" class="household-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="newHouseholdName">Household Name</label>
+                        <input type="text" id="newHouseholdName" name="newHouseholdName"
+                               placeholder="Enter new household name">
+                    </div>
+                    <div class="form-group">
+                        <label for="newHouseholdPassword">Household Password</label>
+                        <input type="password" id="newHouseholdPassword" name="newHouseholdPassword"
+                               placeholder="Create household password">
+                    </div>
+                </div>
+
+                <button type="submit" class="signup-btn">Sign up</button>
+
+                <div class="terms">
+                    By signing up, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                </div>
+            </form>
+
+            <script>
+                // Handle household action radio buttons
+                document.querySelectorAll('input[name="householdAction"]').forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        document.getElementById('joinHouseholdFields').style.display = 'none';
+                        document.getElementById('createHouseholdFields').style.display = 'none';
+
+                        if (this.value === 'join') {
+                            document.getElementById('joinHouseholdFields').style.display = 'block';
+                        } else if (this.value === 'create') {
+                            document.getElementById('createHouseholdFields').style.display = 'block';
+                        }
+                    });
+                });
+
+                // Update hidden household name field when selection changes
+                document.getElementById('householdId').addEventListener('change', function() {
+                    const selectedOption = this.options[this.selectedIndex];
+                    document.getElementById('householdName').value = selectedOption.getAttribute('data-name') || '';
+                });
+
+                // Form validation
+                document.getElementById('signupForm').addEventListener('submit', function(e) {
+                    const action = document.querySelector('input[name="householdAction"]:checked').value;
+
+                    if (action === 'join') {
+                        const householdId = document.getElementById('householdId').value;
+                        const householdPassword = document.getElementById('householdPassword').value;
+
+                        if (!householdId || !householdPassword) {
+                            e.preventDefault();
+                            alert('Please select a household and enter the password');
+                            return false;
+                        }
+                    } else if (action === 'create') {
+                        const newName = document.getElementById('newHouseholdName').value;
+                        const newPassword = document.getElementById('newHouseholdPassword').value;
+
+                        if (!newName || !newPassword) {
+                            e.preventDefault();
+                            alert('Please provide household name and password');
+                            return false;
+                        }
+                    }
+                });
+            </script>
+
+            <div class="login-text">
+                Already have an account? <a href="/login">Log in</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
