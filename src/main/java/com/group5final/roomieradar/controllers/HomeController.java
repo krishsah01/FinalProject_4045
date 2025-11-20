@@ -3,6 +3,7 @@ package com.group5final.roomieradar.controllers;
 import com.group5final.roomieradar.services.CurrentUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
@@ -16,26 +17,27 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String home() {
+    public String home(Model model) {
+        model.addAttribute("noHousehold", !hasHousehold());
         return "index";
     }
 
     @GetMapping("/bills")
-    public String bills() { return hasHousehold() ? "bills" : "redirect:/household?requiresHousehold=true"; }
+    public String bills(Model model) { model.addAttribute("noHousehold", !hasHousehold()); return "bills"; }
     @GetMapping("/bills/add")
-    public String addBill() { return hasHousehold() ? "add-bill" : "redirect:/household?requiresHousehold=true"; }
+    public String addBill(Model model) { model.addAttribute("noHousehold", !hasHousehold()); return "add-bill"; }
     @GetMapping("/chores")
-    public String chores() { return hasHousehold() ? "chores" : "redirect:/household?requiresHousehold=true"; }
+    public String chores(Model model) { model.addAttribute("noHousehold", !hasHousehold()); return "chores"; }
     @GetMapping("/chores/add")
-    public String addChore() { return hasHousehold() ? "add-chore" : "redirect:/household?requiresHousehold=true"; }
+    public String addChore(Model model) { model.addAttribute("noHousehold", !hasHousehold()); return "add-chore"; }
     @GetMapping("/events")
-    public String events() { return hasHousehold() ? "events" : "redirect:/household?requiresHousehold=true"; }
+    public String events(Model model) { model.addAttribute("noHousehold", !hasHousehold()); return "events"; }
     @GetMapping("/events/add")
-    public String addEvent() { return hasHousehold() ? "add-event" : "redirect:/household?requiresHousehold=true"; }
+    public String addEvent(Model model) { model.addAttribute("noHousehold", !hasHousehold()); return "add-event"; }
     @GetMapping("/events/edit")
-    public String editEvent() { return hasHousehold() ? "edit-event" : "redirect:/household?requiresHousehold=true"; }
+    public String editEvent(Model model) { model.addAttribute("noHousehold", !hasHousehold()); return "edit-event"; }
     @GetMapping("/events/details")
-    public String eventDetails() { return hasHousehold() ? "event-details" : "redirect:/household?requiresHousehold=true"; }
+    public String eventDetails(Model model) { model.addAttribute("noHousehold", !hasHousehold()); return "event-details"; }
     @GetMapping("/calendar")
-    public String calendar() { return hasHousehold() ? "calendar" : "redirect:/household?requiresHousehold=true"; }
+    public String calendar(Model model) { model.addAttribute("noHousehold", !hasHousehold()); return "calendar"; }
 }

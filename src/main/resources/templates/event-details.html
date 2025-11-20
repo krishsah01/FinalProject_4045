@@ -15,14 +15,17 @@
 </header>
 
 <main class="container my-4 flex-grow-1">
-    <h2 class="mb-3">Laundry Day</h2>
-    <ul class="list-group mb-3">
-        <li class="list-group-item"><strong>Date:</strong> 2025-11-10 10:00 AM</li>
-        <li class="list-group-item"><strong>Participants:</strong> Alice, Bob</li>
-        <li class="list-group-item"><strong>Description:</strong> Weekly laundry day for the apartment.</li>
-    </ul>
-    <a th:href="@{/events/edit/1}" class="btn btn-warning me-2">Edit Event</a>
-    <button class="btn btn-danger" onclick="alert('Event deleted!'); window.location.href='/events'">Delete Event</button>
+    <div th:if="${noHousehold}" class="alert alert-warning">You must join or create a household to view event details.</div>
+    <div th:unless="${noHousehold}">
+        <h2 class="mb-3">Laundry Day</h2>
+        <ul class="list-group mb-3">
+            <li class="list-group-item"><strong>Date:</strong> 2025-11-10 10:00 AM</li>
+            <li class="list-group-item"><strong>Participants:</strong> Alice, Bob</li>
+            <li class="list-group-item"><strong>Description:</strong> Weekly laundry day for the apartment.</li>
+        </ul>
+        <a th:href="@{/events/edit/1}" class="btn btn-warning me-2">Edit Event</a>
+        <button class="btn btn-danger" onclick="alert('Event deleted!'); window.location.href='/events'">Delete Event</button>
+    </div>
 </main>
 
 <nav class="navbar fixed-bottom bg-white border-top shadow-sm">
