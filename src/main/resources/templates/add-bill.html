@@ -15,25 +15,26 @@
 </header>
 
 <main class="container my-4 flex-grow-1">
+    <div th:if="${noHousehold}" class="alert alert-warning">You must join or create a household to add bills.</div>
     <h2 class="mb-4">Add Bill</h2>
-    <form id="add-bill-form">
+    <form id="add-bill-form" th:classappend="${noHousehold}? ' opacity-50'" th:attr="${noHousehold} ? 'aria-disabled=true' : ''">
         <div class="mb-3">
             <label for="bill-name" class="form-label">Bill Name</label>
-            <input type="text" class="form-control" id="bill-name" placeholder="Electricity, Internet..." required>
+            <input type="text" class="form-control" id="bill-name" placeholder="Electricity, Internet..." required th:disabled="${noHousehold}">
         </div>
         <div class="mb-3">
             <label for="bill-amount" class="form-label">Amount ($)</label>
-            <input type="number" class="form-control" id="bill-amount" placeholder="0.00" min="0" step="0.01" required>
+            <input type="number" class="form-control" id="bill-amount" placeholder="0.00" min="0" step="0.01" required th:disabled="${noHousehold}">
         </div>
         <div class="mb-3">
             <label for="bill-participants" class="form-label">Participants</label>
-            <select class="form-select" id="bill-participants" multiple>
+            <select class="form-select" id="bill-participants" multiple th:disabled="${noHousehold}">
                 <option>Alice</option>
                 <option>Bob</option>
                 <option>Charlie</option>
             </select>
         </div>
-        <button type="submit" class="btn btn-primary">Add Bill</button>
+        <button type="submit" class="btn btn-primary" th:disabled="${noHousehold}">Add Bill</button>
     </form>
 </main>
 

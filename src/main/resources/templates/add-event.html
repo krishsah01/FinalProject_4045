@@ -15,25 +15,26 @@
 </header>
 
 <main class="container my-4 flex-grow-1">
+    <div th:if="${noHousehold}" class="alert alert-warning">You must join or create a household to add events.</div>
     <h2 class="mb-4">Add Event</h2>
-    <form id="add-event-form">
+    <form id="add-event-form" th:classappend="${noHousehold}? ' opacity-50'" th:attr="${noHousehold} ? 'aria-disabled=true' : ''">
         <div class="mb-3">
             <label for="event-name" class="form-label">Event Name</label>
-            <input type="text" class="form-control" id="event-name" required>
+            <input type="text" class="form-control" id="event-name" required th:disabled="${noHousehold}">
         </div>
         <div class="mb-3">
             <label for="event-date" class="form-label">Date & Time</label>
-            <input type="datetime-local" class="form-control" id="event-date" required>
+            <input type="datetime-local" class="form-control" id="event-date" required th:disabled="${noHousehold}">
         </div>
         <div class="mb-3">
             <label for="participants" class="form-label">Participants</label>
-            <select class="form-select" id="participants" multiple>
+            <select class="form-select" id="participants" multiple th:disabled="${noHousehold}">
                 <option>Alice</option>
                 <option>Bob</option>
                 <option>Charlie</option>
             </select>
         </div>
-        <button type="submit" class="btn btn-primary">Add Event</button>
+        <button type="submit" class="btn btn-primary" th:disabled="${noHousehold}">Add Event</button>
     </form>
 </main>
 

@@ -15,10 +15,10 @@
 </header>
 
 <main class="container flex-grow-1 mt-5">
+    <div th:if="${noHousehold}" class="alert alert-warning text-center">Join or create a household to view shared calendar items.</div>
     <h2 class="mb-4 text-center">Your Calendar</h2>
-
-    <!-- Placeholder calendar -->
-    <div class="alert alert-info text-center">
+    <div th:if="${noHousehold}" class="text-muted text-center">Calendar hidden until household membership exists.</div>
+    <div th:unless="${noHousehold}" class="alert alert-info text-center">
         Calendar integration coming soon!
     </div>
 </main>

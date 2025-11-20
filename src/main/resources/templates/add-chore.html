@@ -15,21 +15,22 @@
 </header>
 
 <main class="container my-4 flex-grow-1">
+    <div th:if="${noHousehold}" class="alert alert-warning">You must join or create a household to add chores.</div>
     <h2 class="mb-4">Add Chore</h2>
-    <form id="add-chore-form">
+    <form id="add-chore-form" th:classappend="${noHousehold}? ' opacity-50'" th:attr="${noHousehold} ? 'aria-disabled=true' : ''">
         <div class="mb-3">
             <label for="chore-name" class="form-label">Chore Name</label>
-            <input type="text" class="form-control" id="chore-name" required>
+            <input type="text" class="form-control" id="chore-name" required th:disabled="${noHousehold}">
         </div>
         <div class="mb-3">
             <label for="assignee" class="form-label">Assign To</label>
-            <select class="form-select" id="assignee" required>
+            <select class="form-select" id="assignee" required th:disabled="${noHousehold}">
                 <option>Alice</option>
                 <option>Bob</option>
                 <option>Charlie</option>
             </select>
         </div>
-        <button type="submit" class="btn btn-primary">Add Chore</button>
+        <button type="submit" class="btn btn-primary" th:disabled="${noHousehold}">Add Chore</button>
     </form>
 </main>
 
