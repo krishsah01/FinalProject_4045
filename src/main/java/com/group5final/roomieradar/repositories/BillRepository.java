@@ -4,5 +4,5 @@ import com.group5final.roomieradar.entities.Bill;
 import org.springframework.data.repository.CrudRepository;
 
 public interface BillRepository extends CrudRepository<Bill, Long> {
-    Iterable<Bill> findByHousehold_Id(Long householdId);
+    Iterable<Bill> findByHouseholdId(Long householdId);
 }
