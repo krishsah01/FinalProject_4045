@@ -21,6 +21,9 @@ public class Bill {
     @Column(name = "amount", nullable = false, precision = 10)
     private BigDecimal amount;
 
+    @Column(name = "name", nullable = false)
+    private String name;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "householdId", nullable = false)

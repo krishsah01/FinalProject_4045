@@ -17,6 +17,9 @@ public class Event {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "eventDate", nullable = false)
+    private java.time.LocalDateTime eventDate;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "userid", nullable = false)
     private User userid;
