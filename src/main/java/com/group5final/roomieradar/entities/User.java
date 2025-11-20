@@ -23,9 +23,6 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "isAdmin", nullable = false)
-    private Boolean isAdmin = false;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "householdId")
     private Household household;
