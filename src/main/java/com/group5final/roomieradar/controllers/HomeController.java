@@ -22,22 +22,6 @@ public class HomeController {
         return "index";
     }
 
-    @GetMapping("/bills")
-    public String bills(Model model) { model.addAttribute("noHousehold", !hasHousehold()); return "bills"; }
-    @GetMapping("/bills/add")
-    public String addBill(Model model) { model.addAttribute("noHousehold", !hasHousehold()); return "add-bill"; }
-    @GetMapping("/chores")
-    public String chores(Model model) { model.addAttribute("noHousehold", !hasHousehold()); return "chores"; }
-    @GetMapping("/chores/add")
-    public String addChore(Model model) { model.addAttribute("noHousehold", !hasHousehold()); return "add-chore"; }
-    @GetMapping("/events")
-    public String events(Model model) { model.addAttribute("noHousehold", !hasHousehold()); return "events"; }
-    @GetMapping("/events/add")
-    public String addEvent(Model model) { model.addAttribute("noHousehold", !hasHousehold()); return "add-event"; }
-    @GetMapping("/events/edit")
-    public String editEvent(Model model) { model.addAttribute("noHousehold", !hasHousehold()); return "edit-event"; }
-    @GetMapping("/events/details")
-    public String eventDetails(Model model) { model.addAttribute("noHousehold", !hasHousehold()); return "event-details"; }
     @GetMapping("/calendar")
     public String calendar(Model model) { model.addAttribute("noHousehold", !hasHousehold()); return "calendar"; }
 }

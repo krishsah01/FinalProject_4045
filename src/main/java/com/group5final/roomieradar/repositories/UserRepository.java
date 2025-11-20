@@ -10,4 +10,5 @@ public interface UserRepository extends CrudRepository<User, Long> {
     Optional<User> findByUsername(String username);
     // New helper: fetch all users assigned to a household
     List<User> findByHousehold_Id(Long householdId);
+    List<User> findByHouseholdId(Long householdId);
 }
