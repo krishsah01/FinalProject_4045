@@ -17,44 +17,40 @@
         <p class="mb-0 small opacity-90">Events Management</p>
     </header>
 
-    <main class="container my-4 flex-grow-1 pb-5 mb-5">
-        <div th:if="${noHousehold}" class="alert alert-warning d-flex align-items-center">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            <div>You must join or create a household to view or add events.</div>
+    <main class="container my-4 flex-grow-1">
+        <div th:if="${noHousehold}" class="alert alert-warning">You must join or create a household to view or add events.
         </div>
-
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold text-dark mb-0">Upcoming Events</h2>
-            <a th:href="@{/events/add}" class="btn btn-primary shadow-sm" th:classappend="${noHousehold}? ' disabled'"
-                th:ariaDisabled="${noHousehold}">
-                <i class="bi bi-plus-lg me-1"></i> Add Event
-            </a>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Upcoming Events</h2>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#eventModal"
+                th:disabled="${noHousehold}">Add Event</button>
         </div>
-
         <div th:if="${noHousehold}" class="text-muted text-center py-5">
-            <i class="bi bi-house-slash display-1 text-secondary opacity-25"></i>
+            <i class="bi bi-calendar-event display-1 text-secondary opacity-25"></i>
             <p class="mt-3">Event list hidden until household membership is established.</p>
         </div>
-
         <div th:unless="${noHousehold}" class="list-group shadow-sm rounded-3 overflow-hidden">
             <a th:href="@{/events/1}"
                 class="list-group-item list-group-item-action p-3 d-flex justify-content-between align-items-center">
                 <div>
-                    <div class="fw-bold">Laundry Day</div>
-                    <small class="text-muted"><i class="bi bi-clock me-1"></i> 2025-11-10 10:00 AM</small>
+                    <span class="fw-bold">Laundry Day</span><br>
+                    <small class="text-muted">2025-11-10 10:00 AM</small>
                 </div>
-                <i class="bi bi-chevron-right text-muted"></i>
+                <i class="bi bi-arrow-right-circle fs-4 text-primary"></i>
             </a>
             <a th:href="@{/events/2}"
                 class="list-group-item list-group-item-action p-3 d-flex justify-content-between align-items-center">
                 <div>
-                    <div class="fw-bold">Grocery Shopping</div>
-                    <small class="text-muted"><i class="bi bi-clock me-1"></i> 2025-11-12 5:00 PM</small>
+                    <span class="fw-bold">Grocery Shopping</span><br>
+                    <small class="text-muted">2025-11-12 5:00 PM</small>
                 </div>
-                <i class="bi bi-chevron-right text-muted"></i>
+                <i class="bi bi-arrow-right-circle fs-4 text-primary"></i>
             </a>
         </div>
     </main>
+
+    <!-- Modals -->
+    <div th:replace="fragments/modals :: body"></div>
 
     <nav class="navbar fixed-bottom navbar-bottom shadow-lg">
         <div class="container d-flex justify-content-around">
