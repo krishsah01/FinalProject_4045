@@ -5,6 +5,7 @@ import com.group5final.roomieradar.entities.User;
 import com.group5final.roomieradar.repositories.EventRepository;
 import com.group5final.roomieradar.services.CurrentUserService;
 import com.group5final.roomieradar.services.EventService;
+import jakarta.persistence.Id;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -77,6 +78,58 @@ public class EventController {
             eventService.saveEvent(event);
         }
         return "redirect:/events/" + id;
+    }
+
+    @GetMapping("/add")
+    public String showAddEventForm(Model model) {
+        if (!currentUserService.hasHousehold()) {
+            return "redirect:/household?requiresHousehold=true";
+        }
+        model.addAttribute("event", new Event());
+        return "add-event";
+    }
+
+    @PostMapping("/add")
+    public String addEvent(@RequestParam String name,
+                           @RequestParam String description,
+                           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime eventDate) {
+        if (!currentUserService.hasHousehold()) {
+            return "redirect:/household?requiresHousehold=true";
+        }
+
+        Optional<User> currentUserOpt = currentUserService.getCurrentUser();
+        if (currentUserOpt.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        User currentUser = currentUserOpt.get();  // Unwrap the Optional here
+        Event event = new Event();
+        event.setName(name);
+        event.setDescription(description);
+        event.setEventDate(eventDate);
+        event.setUserid(currentUser);
+        event.setHousehold(currentUser.getHousehold());
+        eventService.saveEvent(event);
+        return "redirect:/events";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteEvent(@PathVariable Long id) {
+        Optional<User> currentUserOpt = currentUserService.getCurrentUser();
+        if (currentUserOpt.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        Optional<Event> eventOpt = eventService.getEventById(id);
+        if (eventOpt.isPresent()) {
+            Event event = eventOpt.get();
+            User currentUser = currentUserOpt.get();
+//             Verify user belongs to the same household
+            if (event.getHousehold().getId().equals(currentUser.getHousehold().getId())) {
+                eventService.deleteEvent(id);
+            }
+        }
+        return "redirect:/events";
     }
 
 }

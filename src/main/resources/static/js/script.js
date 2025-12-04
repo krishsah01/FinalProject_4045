@@ -77,11 +77,11 @@ document.addEventListener("DOMContentLoaded", () => {
         `).join("");
     }
 
-    document.querySelectorAll("button").forEach(btn => {
-        btn.addEventListener("click", e => {
-            if (!btn.classList.contains("btn-warning") && !btn.classList.contains("btn-danger")) {
-                alert(`${btn.textContent.trim()} placeholder clicked!`);
-            }
-        });
-    });
+    // document.querySelectorAll("button").forEach(btn => {
+    //     btn.addEventListener("click", e => {
+    //         if (!btn.classList.contains("btn-warning") && !btn.classList.contains("btn-danger")) {
+    //             alert(`${btn.textContent.trim()} placeholder clicked!`);
+    //         }
+    //     });
+    // });
 });
