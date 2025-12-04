@@ -32,8 +32,8 @@ public class HomeController {
 //    public String events() { return hasHousehold() ? "events" : "redirect:/household?requiresHousehold=true"; }
     @GetMapping("/events/add")
     public String addEvent() { return hasHousehold() ? "add-event" : "redirect:/household?requiresHousehold=true"; }
-    @GetMapping("/events/edit")
-    public String editEvent() { return hasHousehold() ? "edit-event" : "redirect:/household?requiresHousehold=true"; }
+//    @GetMapping("/events/edit")
+//    public String editEvent() { return hasHousehold() ? "edit-event" : "redirect:/household?requiresHousehold=true"; }
 //    @GetMapping("/events/details")
 //    public String eventDetails() { return hasHousehold() ? "event-details" : "redirect:/household?requiresHousehold=true"; }
     @GetMapping("/calendar")
