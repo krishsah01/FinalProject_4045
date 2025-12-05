@@ -31,7 +31,8 @@ public class BillSplit {
     @Column(name = "splitAmount", nullable = false, precision = 10, scale = 2)
     private BigDecimal splitAmount;
 
-    @Column(name = "isPaid", nullable = false)
-    private Boolean isPaid = false;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private com.group5final.roomieradar.enums.SplitStatus status = com.group5final.roomieradar.enums.SplitStatus.UNPAID;
 }
 

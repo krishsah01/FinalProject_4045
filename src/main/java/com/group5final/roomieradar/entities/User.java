@@ -7,7 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "user", schema = "roomieRadarData")
+@Table(name = "user", schema = "roomieRadarData", indexes = {
+    @Index(name = "idx_user_household_id", columnList = "householdId")
+})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

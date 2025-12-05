@@ -96,11 +96,26 @@ public class BillController {
         return billService.getBillSplitsByBill(id);
     }
 
-    @PostMapping("/split/{id}/mark-paid")
+    @PostMapping("/settle/{splitId}")
     @ResponseBody
-    public String markAsPaid(@PathVariable Long id) {
+    public String settleSplit(@PathVariable Long splitId) {
         try {
-            billService.markBillSplitAsPaid(id);
+            User currentUser = currentUserService.getCurrentUser()
+                .orElseThrow(() -> new IllegalStateException("User not authenticated"));
+            billService.settleSplit(splitId, currentUser.getId());
+            return "success";
+        } catch (Exception e) {
+            return "error: " + e.getMessage();
+        }
+    }
+
+    @PostMapping("/approve/{splitId}")
+    @ResponseBody
+    public String approveSplit(@PathVariable Long splitId) {
+        try {
+            User currentUser = currentUserService.getCurrentUser()
+                .orElseThrow(() -> new IllegalStateException("User not authenticated"));
+            billService.approveSplit(splitId, currentUser.getId());
             return "success";
         } catch (Exception e) {
             return "error: " + e.getMessage();

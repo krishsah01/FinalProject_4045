@@ -18,7 +18,8 @@
     </header>
 
     <main class="container text-center mt-5 flex-grow-1" th:with="disabled=${noHousehold}">
-        <div th:if="${noHousehold}" class="alert alert-warning mb-4">Join or create a household to unlock full features.</div>
+        <div th:if="${noHousehold}" class="alert alert-warning mb-4">Join or create a household to unlock full features.
+        </div>
         <h2 class="mb-4">Welcome Back, Roomie!</h2>
         <div class="row g-4">
             <div class="col-6 col-md-3">
@@ -66,8 +67,10 @@
             <h5 class="mb-3">Quick Add</h5>
             <div class="d-flex justify-content-center gap-3 flex-wrap">
                 <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#billModal">Bill</button>
-                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#choreModal">Chore</button>
-                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#eventModal">Event</button>
+                <button class="btn btn-outline-primary" data-bs-toggle="modal"
+                    data-bs-target="#choreModal">Chore</button>
+                <button class="btn btn-outline-primary" data-bs-toggle="modal"
+                    data-bs-target="#eventModal">Event</button>
             </div>
         </div>
     </main>
@@ -94,7 +97,9 @@
                 <i class="bi bi-people-fill fs-4"></i>
                 <span class="d-none d-sm-inline ms-1">People</span>
             </a>
-            <a th:href="@{/logout}" class="nav-link text-danger" title="Logout">
+            <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none;"></form>
+            <a href="#" onclick="document.getElementById('logoutForm').submit(); return false;"
+                class="nav-link text-danger" title="Logout">
                 <i class="bi bi-box-arrow-right fs-4"></i>
                 <span class="d-none d-sm-inline ms-1">Logout</span>
             </a>

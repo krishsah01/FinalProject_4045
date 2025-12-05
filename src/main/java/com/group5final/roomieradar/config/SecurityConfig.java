@@ -38,7 +38,7 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login?logout=true")
                         .permitAll()
                 )
-                )
+
                 // CSRF is enabled by default, so we don't need to explicitly disable it.
                 // However, if we wanted to be explicit, we could configure it here.
                 // For now, removing .csrf(csrf -> csrf.disable()) enables it.
@@ -49,7 +49,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
+        return new LegacyCompatiblePasswordEncoder();
     }
 
     @Bean

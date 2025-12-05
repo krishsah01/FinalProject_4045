@@ -37,7 +37,7 @@
                     <span th:text="${error}">Error occurred</span>
                 </div>
 
-                <form action="/auth/signup" method="post" id="signupForm">
+                <form th:action="@{/auth/signup}" method="post" id="signupForm">
                     <div class="mb-3">
                         <label for="username" class="form-label">Username</label>
                         <input type="text" class="form-control" id="username" name="username"

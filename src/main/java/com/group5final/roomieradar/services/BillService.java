@@ -52,13 +52,10 @@ public class BillService {
 
         bill = billRepository.save(bill);
 
-        // Handle bill splitting
         List<User> usersToSplit;
         if (splitEqually) {
-            // Get all users in the household
             usersToSplit = userRepository.findByHouseholdId(household.getId());
         } else {
-            // Get only selected users
             usersToSplit = (List<User>) userRepository.findAllById(userIds);
         }
 
@@ -66,20 +63,18 @@ public class BillService {
             throw new IllegalArgumentException("No users found to split the bill");
         }
 
-        // Calculate split amount
         BigDecimal splitAmount = amount.divide(
             BigDecimal.valueOf(usersToSplit.size()),
             2,
             RoundingMode.HALF_UP
         );
 
-        // Create bill splits
         for (User user : usersToSplit) {
             BillSplit split = new BillSplit();
             split.setBill(bill);
             split.setUser(user);
             split.setSplitAmount(splitAmount);
-            split.setIsPaid(false);
+            split.setStatus(com.group5final.roomieradar.enums.SplitStatus.UNPAID);
             billSplitRepository.save(split);
         }
 
@@ -95,10 +90,36 @@ public class BillService {
     }
 
     @Transactional
-    public void markBillSplitAsPaid(Long splitId) {
+    public void settleSplit(Long splitId, Long userId) {
         BillSplit split = billSplitRepository.findById(splitId)
             .orElseThrow(() -> new IllegalArgumentException("Bill split not found"));
-        split.setIsPaid(true);
+        
+        if (!split.getUser().getId().equals(userId)) {
+            throw new IllegalArgumentException("You can only settle your own bill splits");
+        }
+
+        if (split.getStatus() != com.group5final.roomieradar.enums.SplitStatus.UNPAID) {
+            throw new IllegalStateException("Bill split is not in UNPAID status");
+        }
+
+        split.setStatus(com.group5final.roomieradar.enums.SplitStatus.PENDING_APPROVAL);
+        billSplitRepository.save(split);
+    }
+
+    @Transactional
+    public void approveSplit(Long splitId, Long creatorId) {
+        BillSplit split = billSplitRepository.findById(splitId)
+            .orElseThrow(() -> new IllegalArgumentException("Bill split not found"));
+        
+        if (!split.getBill().getCreatedBy().getId().equals(creatorId)) {
+            throw new IllegalArgumentException("Only the bill creator can approve settlements");
+        }
+
+        if (split.getStatus() != com.group5final.roomieradar.enums.SplitStatus.PENDING_APPROVAL) {
+            throw new IllegalStateException("Bill split is not pending approval");
+        }
+
+        split.setStatus(com.group5final.roomieradar.enums.SplitStatus.PAID);
         billSplitRepository.save(split);
     }
 
@@ -107,4 +128,3 @@ public class BillService {
         billRepository.deleteById(billId);
     }
 }
-

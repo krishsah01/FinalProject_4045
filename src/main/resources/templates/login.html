@@ -47,7 +47,7 @@
                     <span th:text="${message}">You have been logged out successfully</span>
                 </div>
 
-                <form action="/auth/login" method="post">
+                <form th:action="@{/auth/login}" method="post">
                     <div class="mb-3">
                         <label for="username" class="form-label">Email or Username</label>
                         <input type="text" class="form-control" id="username" name="username"

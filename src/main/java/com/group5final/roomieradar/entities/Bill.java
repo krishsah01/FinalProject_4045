@@ -14,7 +14,10 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "bill", schema = "roomieRadarData")
+@Table(name = "bill", schema = "roomieRadarData", indexes = {
+    @Index(name = "idx_bill_household_id", columnList = "householdId"),
+    @Index(name = "idx_bill_created_by_id", columnList = "createdById")
+})
 public class Bill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

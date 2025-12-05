@@ -41,7 +41,7 @@
                 </div>
                 <h5 class="card-title fw-bold">Join a household</h5>
               </div>
-              <form method="post" action="/household/join">
+              <form method="post" th:action="@{/household/join}">
                 <div class="mb-3">
                   <label class="form-label" for="name">Household Name</label>
                   <input class="form-control" id="name" name="name" required placeholder="Enter household name" />
@@ -65,7 +65,7 @@
                 </div>
                 <h5 class="card-title fw-bold">Create a household</h5>
               </div>
-              <form method="post" action="/household/create">
+              <form method="post" th:action="@{/household/create}">
                 <div class="mb-3">
                   <label class="form-label" for="newname">Household Name</label>
                   <input class="form-control" id="newname" name="name" required placeholder="Choose a name" />
@@ -145,7 +145,9 @@
         <i class="bi bi-people-fill fs-4"></i>
         <span class="d-none d-sm-inline ms-1">People</span>
       </a>
-      <a th:href="@{/logout}" class="nav-link text-danger" title="Logout">
+      <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none;"></form>
+      <a href="#" onclick="document.getElementById('logoutForm').submit(); return false;" class="nav-link text-danger"
+        title="Logout">
         <i class="bi bi-box-arrow-right fs-4"></i>
         <span class="d-none d-sm-inline ms-1">Logout</span>
       </a>
