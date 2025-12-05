@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
 </head>
-<body>
+<body th:fragment="modals">
 <!-- Bill Modal -->
 <div class="modal fade" id="billModal" tabindex="-1" aria-labelledby="billModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -23,8 +23,26 @@
             <input type="number" id="billAmount" class="form-control" min="0" step="0.01" required>
           </div>
           <div class="mb-3">
+            <label for="billDueDate" class="form-label">Due Date (optional)</label>
+            <input type="datetime-local" id="billDueDate" class="form-control">
+          </div>
+          <div class="mb-3">
             <label for="billDescription" class="form-label">Description (optional)</label>
             <textarea id="billDescription" class="form-control" rows="2"></textarea>
+          </div>
+          <div class="mb-3">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="splitEqually" checked>
+              <label class="form-check-label" for="splitEqually">
+                Split equally among all household members
+              </label>
+            </div>
+          </div>
+          <div class="mb-3" id="userSelectionDiv" style="display: none;">
+            <label class="form-label">Select people to split with:</label>
+            <div id="userCheckboxes" class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
+              <!-- User checkboxes will be populated here -->
+            </div>
           </div>
         </form>
         <div class="alert alert-warning mb-0" id="billModalLocked" th:if="${noHousehold}">Join or create a household to add a bill.</div>

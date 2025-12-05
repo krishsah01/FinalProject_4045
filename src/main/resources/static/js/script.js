@@ -77,19 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
         `).join("");
     }
 
-    // Modal submit handlers
-    const billModalSubmit = document.getElementById("billModalSubmit");
-    if (billModalSubmit) {
-        billModalSubmit.addEventListener("click", () => {
-            const form = document.getElementById("billModalForm");
-            if (form.checkValidity()) {
-                // TODO: Implement bill submission
-                console.log("Bill submission not yet implemented");
-            } else {
-                form.reportValidity();
-            }
-        });
-    }
+    // Bill modal is handled in bills.html directly
 
     const choreModalSubmit = document.getElementById("choreModalSubmit");
     if (choreModalSubmit) {

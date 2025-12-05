@@ -22,17 +22,6 @@ public class HomeController {
         return "index";
     }
 
-    @GetMapping("/bills")
-    public String bills(Model model) {
-        model.addAttribute("noHousehold", !hasHousehold());
-        return "bills";
-    }
-
-    @GetMapping("/bills/add")
-    public String addBill(Model model) {
-        model.addAttribute("noHousehold", !hasHousehold());
-        return "add-bill";
-    }
 
     @GetMapping("/chores")
     public String chores(Model model) {
