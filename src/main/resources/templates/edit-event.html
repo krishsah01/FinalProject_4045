@@ -16,24 +16,21 @@
 
 <main class="container my-4 flex-grow-1">
     <h2 class="mb-4">Edit Event</h2>
-    <form id="edit-event-form">
+    <form th:action="@{/events/edit/{id}(id=${event.id})}" method="post">
         <div class="mb-3">
             <label for="event-name" class="form-label">Event Name</label>
-            <input type="text" class="form-control" id="event-name" value="Laundry Day">
+            <input type="text" class="form-control" id="event-name" name="name" th:value="${event.name}">
         </div>
         <div class="mb-3">
             <label for="event-date" class="form-label">Date & Time</label>
-            <input type="datetime-local" class="form-control" id="event-date" value="2025-11-10T10:00">
+            <input type="datetime-local" class="form-control" id="event-date" name="eventDate" th:value="${event.eventDate}">
         </div>
         <div class="mb-3">
-            <label for="participants" class="form-label">Participants</label>
-            <select class="form-select" id="participants" multiple>
-                <option selected>Alice</option>
-                <option selected>Bob</option>
-                <option>Charlie</option>
-            </select>
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="description" th:text="${event.description}"></textarea>
         </div>
         <button type="submit" class="btn btn-warning">Save Changes</button>
+        <a th:href="@{/events/{id}(id=${event.id})}" class="btn btn-secondary">Cancel</a>
     </form>
 </main>
 
@@ -54,7 +51,7 @@
 <script>
     document.getElementById("edit-event-form")?.addEventListener("submit", e => {
         e.preventDefault();
-        alert("Event updated! (placeholder)");
+        alert("Event updated!");
         window.location.href = "/events";
     });
 </script>

@@ -20,16 +20,22 @@
         <a th:href="@{/events/add}" class="btn btn-primary">Add Event</a>
     </div>
 
-    <!-- Event List (placeholder) -->
+    <!-- Event List -->
     <div class="list-group">
-        <a th:href="@{/events/1}" class="list-group-item list-group-item-action">
-            Laundry Day - 2025-11-10 10:00 AM
-        </a>
-        <a th:href="@{/events/2}" class="list-group-item list-group-item-action">
-            Grocery Shopping - 2025-11-12 5:00 PM
+        <div th:if="${#lists.isEmpty(events)}" class="text-muted text-center py-3">
+            No events scheduled yet.
+        </div>
+        <a th:each="event : ${events}"
+           th:href="@{/events/{id}(id=${event.id})}"
+           class="list-group-item list-group-item-action">
+            <span th:text="${event.name}">Event Name</span>
+            <span th:if="${event.eventDate}" class="text-muted">
+                - <span th:text="${#temporals.format(event.eventDate, 'yyyy-MM-dd hh:mm a')}"></span>
+            </span>
         </a>
     </div>
 </main>
+
 
 <nav class="navbar fixed-bottom bg-white border-top shadow-sm">
     <div class="container d-flex justify-content-around">
