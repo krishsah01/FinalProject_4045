@@ -21,24 +21,25 @@
         <div th:if="${noHousehold}" class="alert alert-warning">You must join or create a household to view or add
             chores.
         </div>
+        <div th:if="${msg}" class="alert alert-success" th:text="${msg}"></div>
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2>Chores</h2>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#choreModal"
-                th:disabled="${noHousehold}">Add Chore</button>
+            <a th:href="@{/chores/add}" class="btn btn-primary" th:disabled="${noHousehold}">Add Chore</a>
         </div>
         <div th:if="${noHousehold}" class="text-muted text-center py-5">
             <i class="bi bi-broom display-1 text-secondary opacity-25"></i>
             <p class="mt-3">Chore list hidden until household membership is established.</p>
         </div>
         <div th:unless="${noHousehold}" class="list-group shadow-sm rounded-3 overflow-hidden">
-            <div class="list-group-item d-flex justify-content-between align-items-center">
-                <div><span class="fw-bold">Take out trash</span><br><small class="text-muted">Assigned to Alice</small>
+            <div th:each="chore : ${chores}" class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="fw-bold" th:text="${chore.name}"></span><br>
+                    <small class="text-muted" th:text="'Assigned to ' + ${chore.user.username}"></small>
                 </div>
-                <span class="badge bg-secondary">Due Today</span>
+                <span class="badge bg-secondary" th:text="'Due ' + ${#temporals.format(chore.dueDate, 'yyyy-MM-dd')}"></span>
             </div>
-            <div class="list-group-item d-flex justify-content-between align-items-center">
-                <div><span class="fw-bold">Vacuum</span><br><small class="text-muted">Assigned to Bob</small></div>
-                <span class="badge bg-secondary">Due Tomorrow</span>
+            <div th:if="${#lists.isEmpty(chores)}" class="list-group-item text-center text-muted">
+                No chores yet. Add one!
             </div>
         </div>
     </main>
