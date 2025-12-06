@@ -21,16 +21,4 @@ public class HomeController {
         model.addAttribute("noHousehold", !hasHousehold());
         return "index";
     }
-
-
-    @GetMapping("/chores")
-    public String chores(Model model) {
-        model.addAttribute("noHousehold", !hasHousehold());
-        return "chores";
-    }
-
-    @GetMapping("/chores/add")
-    public String addChore() { return hasHousehold() ? "add-chore" : "redirect:/household?requiresHousehold=true"; }
-    
-    // Events and Calendar routes are now handled by their own controllers
 }
