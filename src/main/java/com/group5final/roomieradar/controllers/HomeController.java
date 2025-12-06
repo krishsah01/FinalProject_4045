@@ -30,38 +30,7 @@ public class HomeController {
     }
 
     @GetMapping("/chores/add")
-    public String addChore(Model model) {
-        model.addAttribute("noHousehold", !hasHousehold());
-        return "add-chore";
-    }
-
-    @GetMapping("/events")
-    public String events(Model model) {
-        model.addAttribute("noHousehold", !hasHousehold());
-        return "events";
-    }
-
-    @GetMapping("/events/add")
-    public String addEvent(Model model) {
-        model.addAttribute("noHousehold", !hasHousehold());
-        return "add-event";
-    }
-
-    @GetMapping("/events/edit")
-    public String editEvent(Model model) {
-        model.addAttribute("noHousehold", !hasHousehold());
-        return "edit-event";
-    }
-
-    @GetMapping("/events/details")
-    public String eventDetails(Model model) {
-        model.addAttribute("noHousehold", !hasHousehold());
-        return "event-details";
-    }
-
-    @GetMapping("/calendar")
-    public String calendar(Model model) {
-        model.addAttribute("noHousehold", !hasHousehold());
-        return "calendar";
-    }
+    public String addChore() { return hasHousehold() ? "add-chore" : "redirect:/household?requiresHousehold=true"; }
+    
+    // Events and Calendar routes are now handled by their own controllers
 }

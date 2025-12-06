@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -23,10 +23,10 @@ public class CalendarItem {
     private String description;
 
     @Column(name = "dateStart", nullable = false)
-    private Instant dateStart;
+    private LocalDateTime dateStart;
 
     @Column(name = "dateEnd")
-    private Instant dateEnd;
+    private LocalDateTime dateEnd;
 
     @Column(name = "repeatDuration")
     private Integer repeatDuration;
