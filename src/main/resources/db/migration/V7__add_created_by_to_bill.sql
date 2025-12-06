@@ -1,0 +1,7 @@
+ALTER TABLE bill
+ADD COLUMN createdById BIGINT;
+
+ALTER TABLE bill
+ADD CONSTRAINT fk_bill_created_by
+FOREIGN KEY (createdById) REFERENCES user(id)
+ON DELETE SET NULL;

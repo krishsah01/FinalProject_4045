@@ -47,6 +47,7 @@ public class CalendarController {
             model.addAttribute("events", Collections.emptyList());
             model.addAttribute("calendarItems", Collections.emptyList());
             model.addAttribute("calendarItemInstances", Collections.emptyMap());
+            model.addAttribute("noHousehold", true);
             return "calendar";
         }
 
@@ -76,6 +77,7 @@ public class CalendarController {
         model.addAttribute("calendarItems", calendarItems); // keep for backward compatibility if needed
         model.addAttribute("calendarItemInstances", instancesByDate);
         model.addAttribute("focusedDate", date != null ? date.toString() : null);
+        model.addAttribute("noHousehold", false);
 
         return "calendar";
     }

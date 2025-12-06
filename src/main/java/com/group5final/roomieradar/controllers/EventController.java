@@ -21,10 +21,12 @@ public class EventController {
 
     private final EventService eventService;
     private final CurrentUserService currentUserService;
+    private final com.group5final.roomieradar.repositories.UserRepository userRepository;
 
-    public EventController(EventService eventService, CurrentUserService currentUserService) {
+    public EventController(EventService eventService, CurrentUserService currentUserService, com.group5final.roomieradar.repositories.UserRepository userRepository) {
         this.eventService = eventService;
         this.currentUserService = currentUserService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping
@@ -33,6 +35,7 @@ public class EventController {
             return "redirect:/household?requiresHousehold=true";
         }
         model.addAttribute("events", eventService.getEventsForCurrentUserHousehold());
+        model.addAttribute("noHousehold", false);
         return "events";
     }
 
@@ -48,6 +51,7 @@ public class EventController {
         }
 
         model.addAttribute("event", event.get());
+        model.addAttribute("noHousehold", false);
         return "event-details";
     }
 
@@ -61,6 +65,8 @@ public class EventController {
             return "redirect:/events";
         }
         model.addAttribute("event", event.get());
+        model.addAttribute("noHousehold", false);
+        model.addAttribute("householdMembers", userRepository.findByHouseholdId(currentUserService.getCurrentUser().get().getHousehold().getId()));
         return "edit-event";
     }
 
@@ -68,13 +74,20 @@ public class EventController {
     public String updateEvent(@PathVariable Long id,
                               @RequestParam String name,
                               @RequestParam String description,
-                              @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime eventDate) {
+                              @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime eventDate,
+                              @RequestParam(required = false) java.util.List<Long> attendeeIds) {
         Optional<Event> eventOpt = eventService.getEventById(id);
         if (eventOpt.isPresent()) {
             Event event = eventOpt.get();
             event.setName(name);
             event.setDescription(description);
             event.setEventDate(eventDate);
+            if (attendeeIds != null) {
+                java.util.List<User> attendees = (java.util.List<User>) userRepository.findAllById(attendeeIds);
+                event.setAttendees(new java.util.HashSet<>(attendees));
+            } else {
+                event.getAttendees().clear();
+            }
             eventService.saveEvent(event);
         }
         return "redirect:/events/" + id;
@@ -86,13 +99,16 @@ public class EventController {
             return "redirect:/household?requiresHousehold=true";
         }
         model.addAttribute("event", new Event());
+        model.addAttribute("noHousehold", false);
+        model.addAttribute("householdMembers", userRepository.findByHouseholdId(currentUserService.getCurrentUser().get().getHousehold().getId()));
         return "add-event";
     }
 
     @PostMapping("/add")
     public String addEvent(@RequestParam String name,
                            @RequestParam String description,
-                           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime eventDate) {
+                           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime eventDate,
+                           @RequestParam(required = false) java.util.List<Long> attendeeIds) {
         if (!currentUserService.hasHousehold()) {
             return "redirect:/household?requiresHousehold=true";
         }
@@ -109,6 +125,10 @@ public class EventController {
         event.setEventDate(eventDate);
         event.setUserid(currentUser);
         event.setHousehold(currentUser.getHousehold());
+        if (attendeeIds != null) {
+            java.util.List<User> attendees = (java.util.List<User>) userRepository.findAllById(attendeeIds);
+            event.setAttendees(new java.util.HashSet<>(attendees));
+        }
         eventService.saveEvent(event);
         return "redirect:/events";
     }

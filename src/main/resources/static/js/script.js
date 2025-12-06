@@ -77,11 +77,31 @@ document.addEventListener("DOMContentLoaded", () => {
         `).join("");
     }
 
-    // document.querySelectorAll("button").forEach(btn => {
-    //     btn.addEventListener("click", e => {
-    //         if (!btn.classList.contains("btn-warning") && !btn.classList.contains("btn-danger")) {
-    //             alert(`${btn.textContent.trim()} placeholder clicked!`);
-    //         }
-    //     });
-    // });
+    // Bill modal is handled in bills.html directly
+
+    const choreModalSubmit = document.getElementById("choreModalSubmit");
+    if (choreModalSubmit) {
+        choreModalSubmit.addEventListener("click", () => {
+            const form = document.getElementById("choreModalForm");
+            if (form.checkValidity()) {
+                // TODO: Implement chore submission
+                console.log("Chore submission not yet implemented");
+            } else {
+                form.reportValidity();
+            }
+        });
+    }
+
+    const eventModalSubmit = document.getElementById("eventModalSubmit");
+    if (eventModalSubmit) {
+        eventModalSubmit.addEventListener("click", () => {
+            const form = document.getElementById("eventModalForm");
+            if (form.checkValidity()) {
+                // TODO: Implement event submission
+                console.log("Event submission not yet implemented");
+            } else {
+                form.reportValidity();
+            }
+        });
+    }
 });

@@ -4,6 +4,7 @@ package com.group5final.roomieradar.controllers;
 import com.group5final.roomieradar.entities.Event;
 import com.group5final.roomieradar.entities.Household;
 import com.group5final.roomieradar.entities.User;
+import com.group5final.roomieradar.repositories.UserRepository;
 import com.group5final.roomieradar.services.CurrentUserService;
 import com.group5final.roomieradar.services.EventService;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +30,9 @@ class EventControllerTest {
 
     @Mock
     private CurrentUserService currentUserService;
+
+    @Mock
+    private UserRepository userRepository;
 
     @Mock
     private Model model;
@@ -136,11 +140,14 @@ class EventControllerTest {
     void editEvent_found_addsEventAndReturnsEdit() {
         when(currentUserService.hasHousehold()).thenReturn(true);
         when(eventService.getEventById(5L)).thenReturn(Optional.of(sampleEvent));
+        when(currentUserService.getCurrentUser()).thenReturn(Optional.of(sampleUser));
+        when(userRepository.findByHouseholdId(1L)).thenReturn(Collections.singletonList(sampleUser));
 
         String view = eventController.editEvent(5L, model);
 
         assertEquals("edit-event", view);
         verify(model).addAttribute("event", sampleEvent);
+        verify(model).addAttribute("householdMembers", Collections.singletonList(sampleUser));
     }
 
     @Test
@@ -148,7 +155,7 @@ class EventControllerTest {
         when(eventService.getEventById(5L)).thenReturn(Optional.of(sampleEvent));
         LocalDateTime newDate = LocalDateTime.now().plusDays(2);
 
-        String view = eventController.updateEvent(5L, "NewName", "NewDesc", newDate);
+        String view = eventController.updateEvent(5L, "NewName", "NewDesc", newDate, null);
 
         assertEquals("redirect:/events/5", view);
         ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
@@ -164,7 +171,7 @@ class EventControllerTest {
         when(eventService.getEventById(5L)).thenReturn(Optional.empty());
         LocalDateTime newDate = LocalDateTime.now().plusDays(2);
 
-        String view = eventController.updateEvent(5L, "Name", "Desc", newDate);
+        String view = eventController.updateEvent(5L, "Name", "Desc", newDate, null);
 
         assertEquals("redirect:/events/5", view);
         verify(eventService, never()).saveEvent(any());
@@ -182,18 +189,21 @@ class EventControllerTest {
     @Test
     void showAddEventForm_withHousehold_addsEmptyEventAndReturnsView() {
         when(currentUserService.hasHousehold()).thenReturn(true);
+        when(currentUserService.getCurrentUser()).thenReturn(Optional.of(sampleUser));
+        when(userRepository.findByHouseholdId(1L)).thenReturn(Collections.singletonList(sampleUser));
 
         String view = eventController.showAddEventForm(model);
 
         assertEquals("add-event", view);
         verify(model).addAttribute(eq("event"), any(Event.class));
+        verify(model).addAttribute("householdMembers", Collections.singletonList(sampleUser));
     }
 
     @Test
     void addEvent_noHousehold_redirectsToHousehold() {
         when(currentUserService.hasHousehold()).thenReturn(false);
 
-        String view = eventController.addEvent("n", "d", LocalDateTime.now());
+        String view = eventController.addEvent("n", "d", LocalDateTime.now(), null);
 
         assertEquals("redirect:/household?requiresHousehold=true", view);
         verify(eventService, never()).saveEvent(any());
@@ -204,7 +214,7 @@ class EventControllerTest {
         when(currentUserService.hasHousehold()).thenReturn(true);
         when(currentUserService.getCurrentUser()).thenReturn(Optional.empty());
 
-        String view = eventController.addEvent("n", "d", LocalDateTime.now());
+        String view = eventController.addEvent("n", "d", LocalDateTime.now(), null);
 
         assertEquals("redirect:/login", view);
         verify(eventService, never()).saveEvent(any());
@@ -216,7 +226,7 @@ class EventControllerTest {
         when(currentUserService.getCurrentUser()).thenReturn(Optional.of(sampleUser));
 
         LocalDateTime dt = LocalDateTime.now().plusDays(3);
-        String view = eventController.addEvent("Birthday", "Cake", dt);
+        String view = eventController.addEvent("Birthday", "Cake", dt, null);
 
         assertEquals("redirect:/events", view);
 

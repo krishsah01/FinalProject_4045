@@ -5,6 +5,7 @@ import com.group5final.roomieradar.entities.User;
 import com.group5final.roomieradar.repositories.HouseholdRepository;
 import com.group5final.roomieradar.repositories.UserRepository;
 import com.group5final.roomieradar.services.CurrentUserService;
+import com.group5final.roomieradar.services.HouseholdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +18,7 @@ import java.util.Optional;
 public class HouseholdController {
 
     @Autowired private UserRepository userRepository;
-    @Autowired private HouseholdRepository householdRepository;
+    @Autowired private HouseholdService householdService;
     @Autowired private CurrentUserService currentUserService;
 
     @GetMapping("/household")
@@ -45,15 +46,15 @@ public class HouseholdController {
                                 Model model) {
         User me = currentUserService.getCurrentUser().orElse(null);
         if (me == null) return "redirect:/login";
-        Optional<Household> h = householdRepository.findByNameAndPassword(name, password);
-        if (h.isEmpty()) {
-            model.addAttribute("error", "Invalid household name or password");
+        
+        try {
+            householdService.joinHousehold(name, password, me);
+            return "redirect:/household?msg=Joined";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
             model.addAttribute("me", me);
-            return household(null, null, model); // reuse listing logic
+            return household(null, null, model);
         }
-        me.setHousehold(h.get());
-        userRepository.save(me);
-        return "redirect:/household?msg=Joined";
     }
 
     @PostMapping("/household/create")
@@ -67,17 +68,14 @@ public class HouseholdController {
             model.addAttribute("me", me);
             return household(null, null, model);
         }
-        if (householdRepository.findByName(name).isPresent()) {
-            model.addAttribute("error", "Household name already exists");
+        
+        try {
+            householdService.createHousehold(name, password, me);
+            return "redirect:/household?msg=Created";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
             model.addAttribute("me", me);
             return household(null, null, model);
         }
-        Household h = new Household();
-        h.setName(name);
-        h.setPassword(password);
-        h = householdRepository.save(h);
-        me.setHousehold(h);
-        userRepository.save(me);
-        return "redirect:/household?msg=Created";
     }
 }

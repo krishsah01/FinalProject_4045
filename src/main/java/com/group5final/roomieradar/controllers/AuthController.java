@@ -4,6 +4,9 @@ import com.group5final.roomieradar.entities.Household;
 import com.group5final.roomieradar.entities.User;
 import com.group5final.roomieradar.repositories.HouseholdRepository;
 import com.group5final.roomieradar.repositories.UserRepository;
+import com.group5final.roomieradar.services.CurrentUserService;
+import com.group5final.roomieradar.services.HouseholdService;
+import com.group5final.roomieradar.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +18,7 @@ import java.util.Optional;
 public class AuthController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
     private HouseholdRepository householdRepository;
@@ -37,65 +40,27 @@ public class AuthController {
     @GetMapping("/signup")
     public String signup(Model model) {
         model.addAttribute("households", householdRepository.findAll());
+        model.addAttribute("userRegistrationDTO", new com.group5final.roomieradar.dto.UserRegistrationDTO());
         return "signup";
     }
 
     @PostMapping("/auth/signup")
-    public String registerUser(@RequestParam("username") String username,
-                               @RequestParam("email") String email,
-                               @RequestParam("password") String password,
-                               @RequestParam("householdAction") String householdAction,
-                               @RequestParam(value = "householdId", required = false) Long householdId,
-                               @RequestParam(value = "householdName", required = false) String householdName,
-                               @RequestParam(value = "householdPassword", required = false) String householdPassword,
-                               @RequestParam(value = "newHouseholdName", required = false) String newHouseholdName,
-                               @RequestParam(value = "newHouseholdPassword", required = false) String newHouseholdPassword,
+    public String registerUser(@jakarta.validation.Valid @ModelAttribute("userRegistrationDTO") com.group5final.roomieradar.dto.UserRegistrationDTO registrationDTO,
+                               org.springframework.validation.BindingResult bindingResult,
                                Model model) {
-        if (userRepository.findByUsername(username).isPresent()) {
-            model.addAttribute("error", "Username already exists");
+        if (bindingResult.hasErrors()) {
             model.addAttribute("households", householdRepository.findAll());
             return "signup";
         }
-        Household household = null;
-        if ("join".equals(householdAction)) {
-            if (householdId == null || householdName == null || householdPassword == null) {
-                model.addAttribute("error", "Please select a household and enter the password");
-                model.addAttribute("households", householdRepository.findAll());
-                return "signup";
-            }
-            Optional<Household> householdOpt = householdRepository.findByNameAndPassword(householdName, householdPassword);
-            if (householdOpt.isEmpty()) {
-                model.addAttribute("error", "Invalid household password");
-                model.addAttribute("households", householdRepository.findAll());
-                return "signup";
-            }
-            household = householdOpt.get();
-        } else if ("create".equals(householdAction)) {
-            if (newHouseholdName == null || newHouseholdName.trim().isEmpty() ||
-                newHouseholdPassword == null || newHouseholdPassword.trim().isEmpty()) {
-                model.addAttribute("error", "Please provide household name and password");
-                model.addAttribute("households", householdRepository.findAll());
-                return "signup";
-            }
-            if (householdRepository.findByName(newHouseholdName).isPresent()) {
-                model.addAttribute("error", "Household name already exists");
-                model.addAttribute("households", householdRepository.findAll());
-                return "signup";
-            }
-            household = new Household();
-            household.setName(newHouseholdName);
-            household.setPassword(newHouseholdPassword);
-            household = householdRepository.save(household);
+
+        try {
+            userService.registerUser(registrationDTO);
+            return "redirect:/login?registered=true";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("households", householdRepository.findAll());
+            return "signup";
         }
-        User user = new User();
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setPassword(password);
-        if (household != null) {
-            user.setHousehold(household);
-        }
-        userRepository.save(user);
-        return "redirect:/login?registered=true";
     }
 
     @GetMapping("/api/household/name")
