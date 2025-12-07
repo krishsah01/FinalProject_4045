@@ -37,23 +37,35 @@
                     <span th:text="${error}">Error occurred</span>
                 </div>
 
-                <form th:action="@{/auth/signup}" method="post" id="signupForm">
+                <form th:action="@{/auth/signup}" method="post" id="signupForm" th:object="${userRegistrationDTO}">
                     <div class="mb-3">
                         <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" name="username"
+                        <input type="text" class="form-control" id="username" th:field="*{username}"
+                            th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'"
                             placeholder="Choose a username" required>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
+                            Username error
+                        </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email"
+                        <input type="email" class="form-control" id="email" th:field="*{email}"
+                            th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'" placeholder="Enter your email"
                             required>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
+                            Email error
+                        </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password"
+                        <input type="password" class="form-control" id="password" th:field="*{password}"
+                            th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"
                             placeholder="Create a password" required>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+                            Password error
+                        </div>
                     </div>
 
                     <div class="mb-4">

@@ -7,6 +7,7 @@ import com.group5final.roomieradar.entities.User;
 import com.group5final.roomieradar.repositories.BillRepository;
 import com.group5final.roomieradar.repositories.BillSplitRepository;
 import com.group5final.roomieradar.repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Slf4j
 public class BillService {
 
     @Autowired
@@ -51,6 +53,8 @@ public class BillService {
         bill.setCreatedBy(currentUser);
 
         bill = billRepository.save(bill);
+        log.info("Created bill: {} with ID: {}", bill.getName(), bill.getId());
+
 
         List<User> usersToSplit;
         if (splitEqually) {
@@ -76,6 +80,7 @@ public class BillService {
             split.setSplitAmount(splitAmount);
             split.setStatus(com.group5final.roomieradar.enums.SplitStatus.UNPAID);
             billSplitRepository.save(split);
+            log.debug("Created bill split for user {} for bill {}", user.getId(), bill.getId());
         }
 
         return bill;
@@ -104,6 +109,7 @@ public class BillService {
 
         split.setStatus(com.group5final.roomieradar.enums.SplitStatus.PENDING_APPROVAL);
         billSplitRepository.save(split);
+        log.info("Bill split {} for user {} set to PENDING_APPROVAL", splitId, userId);
     }
 
     @Transactional
@@ -121,10 +127,18 @@ public class BillService {
 
         split.setStatus(com.group5final.roomieradar.enums.SplitStatus.PAID);
         billSplitRepository.save(split);
+        log.info("Bill split {} approved by creator {}", splitId, creatorId);
     }
 
     @Transactional
-    public void deleteBill(Long billId) {
-        billRepository.deleteById(billId);
+    public void saveBill(Bill bill) {
+        log.info("Saving bill: {}", bill.getName());
+        billRepository.save(bill);
+    }
+
+    @Transactional
+    public void deleteBill(Long id) {
+        log.info("Deleting bill with ID: {}", id);
+        billRepository.deleteById(id);
     }
 }
