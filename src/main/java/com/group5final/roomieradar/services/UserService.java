@@ -6,6 +6,7 @@ import com.group5final.roomieradar.entities.User;
 import com.group5final.roomieradar.repositories.HouseholdRepository;
 import com.group5final.roomieradar.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class UserService {
 
     @Autowired
@@ -25,8 +27,10 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     @Transactional
-    public User registerUser(UserRegistrationDTO registrationDTO) {
+    public void registerUser(UserRegistrationDTO registrationDTO) {
+        log.info("Attempting to register user: {}", registrationDTO.getUsername());
         if (userRepository.findByUsername(registrationDTO.getUsername()).isPresent()) {
+            log.warn("Registration failed: Username {} already exists", registrationDTO.getUsername());
             throw new IllegalArgumentException("Username already exists");
         }
 
@@ -60,6 +64,7 @@ public class UserService {
             user.setHousehold(household);
         }
 
-        return userRepository.save(user);
+        userRepository.save(user);
+        log.info("User registered successfully: {}", user.getUsername());
     }
 }
