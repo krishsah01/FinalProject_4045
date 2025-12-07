@@ -14,6 +14,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+/**
+ * Controller for handling authentication-related requests.
+ * <p>
+ * This controller manages login, signup, and user registration processes,
+ * including error handling and household selection.
+ * </p>
+ */
 @Controller
 public class AuthController {
 
@@ -23,6 +30,18 @@ public class AuthController {
     @Autowired
     private HouseholdRepository householdRepository;
 
+    /**
+     * Handles GET requests to the login page ("/login").
+     * <p>
+     * Displays error or logout messages if provided as query parameters.
+     * Adds a list of all households to the model for display.
+     * </p>
+     *
+     * @param error optional error parameter indicating login failure
+     * @param logout optional logout parameter indicating successful logout
+     * @param model the model to add attributes to
+     * @return the name of the view to render ("login")
+     */
     @GetMapping("/login")
     public String login(@RequestParam(value = "error", required = false) String error,
                         @RequestParam(value = "logout", required = false) String logout,
@@ -37,6 +56,15 @@ public class AuthController {
         return "login";
     }
 
+    /**
+     * Handles GET requests to the signup page ("/signup").
+     * <p>
+     * Prepares the model with a list of households and a new user registration DTO.
+     * </p>
+     *
+     * @param model the model to add attributes to
+     * @return the name of the view to render ("signup")
+     */
     @GetMapping("/signup")
     public String signup(Model model) {
         model.addAttribute("households", householdRepository.findAll());
@@ -44,6 +72,18 @@ public class AuthController {
         return "signup";
     }
 
+    /**
+     * Handles POST requests for user registration ("/auth/signup").
+     * <p>
+     * Validates the registration DTO and attempts to register the user.
+     * Redirects to login on success or back to signup on validation errors or exceptions.
+     * </p>
+     *
+     * @param registrationDTO the user registration data
+     * @param bindingResult the result of validation
+     * @param model the model to add attributes to (for errors)
+     * @return redirect to login on success, or "signup" view on failure
+     */
     @PostMapping("/auth/signup")
     public String registerUser(@jakarta.validation.Valid @ModelAttribute("userRegistrationDTO") com.group5final.roomieradar.dto.UserRegistrationDTO registrationDTO,
                                org.springframework.validation.BindingResult bindingResult,
@@ -63,6 +103,15 @@ public class AuthController {
         }
     }
 
+    /**
+     * Handles GET requests to retrieve a household name by ID ("/api/household/name").
+     * <p>
+     * This is an API endpoint returning the name as plain text.
+     * </p>
+     *
+     * @param id the ID of the household
+     * @return the name of the household, or an empty string if not found
+     */
     @GetMapping("/api/household/name")
     @ResponseBody
     public String getHouseholdName(@RequestParam("id") Long id) {

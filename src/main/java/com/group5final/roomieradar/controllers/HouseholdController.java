@@ -14,6 +14,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Controller for managing household-related operations.
+ * <p>
+ * This controller handles viewing household details, joining existing households,
+ * and creating new households.
+ * </p>
+ */
 @Controller
 public class HouseholdController {
 
@@ -21,6 +28,17 @@ public class HouseholdController {
     @Autowired private HouseholdService householdService;
     @Autowired private CurrentUserService currentUserService;
 
+    /**
+     * Handles GET requests to view household details ("/household").
+     * <p>
+     * Adds current user, members, and messages to the model. Sorts members by username.
+     * </p>
+     *
+     * @param requires optional parameter indicating if household is required
+     * @param msg optional message parameter
+     * @param model the model to add attributes to
+     * @return the name of the view to render ("household")
+     */
     @GetMapping("/household")
     public String household(@RequestParam(value = "requiresHousehold", required = false) String requires,
                             @RequestParam(value = "msg", required = false) String msg,
@@ -40,6 +58,18 @@ public class HouseholdController {
         return "household";
     }
 
+    /**
+     * Handles POST requests to join a household ("/household/join").
+     * <p>
+     * Attempts to join the specified household using the provided credentials.
+     * Redirects back to household page on success or with error on failure.
+     * </p>
+     *
+     * @param name the name of the household
+     * @param password the password of the household
+     * @param model the model to add attributes to (for errors)
+     * @return redirect to "/household" on success, or household view on error
+     */
     @PostMapping("/household/join")
     public String joinHousehold(@RequestParam("name") String name,
                                 @RequestParam("password") String password,
@@ -57,6 +87,18 @@ public class HouseholdController {
         }
     }
 
+    /**
+     * Handles POST requests to create a new household ("/household/create").
+     * <p>
+     * Validates input and creates the household, assigning the current user.
+     * Redirects back to household page on success or with error on failure.
+     * </p>
+     *
+     * @param name the name for the new household
+     * @param password the password for the new household
+     * @param model the model to add attributes to (for errors)
+     * @return redirect to "/household" on success, or household view on error
+     */
     @PostMapping("/household/create")
     public String createHousehold(@RequestParam("name") String name,
                                   @RequestParam("password") String password,
