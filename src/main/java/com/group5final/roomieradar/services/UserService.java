@@ -1,17 +1,18 @@
 package com.group5final.roomieradar.services;
 
 import com.group5final.roomieradar.dto.UserRegistrationDTO;
-import com.group5final.roomieradar.entities.Household;
 import com.group5final.roomieradar.entities.User;
-import com.group5final.roomieradar.repositories.HouseholdRepository;
 import com.group5final.roomieradar.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
+/**
+ * Service for managing user-related operations.
+ * <p>
+ * This service handles user registration, including validation and password encoding.
+ * </p>
+ */
 @Service
 public class UserService {
 
@@ -19,47 +20,28 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private HouseholdRepository householdRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Transactional
-    public User registerUser(UserRegistrationDTO registrationDTO) {
+    /**
+     * Registers a new user based on the provided registration DTO.
+     * <p>
+     * Validates uniqueness of username, encodes the password, and saves the user.
+     * Throws IllegalArgumentException on validation failures.
+     * </p>
+     *
+     * @param registrationDTO the user registration data
+     * @throws IllegalArgumentException if username is taken or other validation fails
+     */
+    public void registerUser(UserRegistrationDTO registrationDTO) {
         if (userRepository.findByUsername(registrationDTO.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("Username already exists");
-        }
-
-        Household household = null;
-        if ("join".equals(registrationDTO.getHouseholdAction())) {
-            household = householdRepository.findByName(registrationDTO.getHouseholdName())
-                    .orElseThrow(() -> new IllegalArgumentException("Household not found"));
-            
-            if (!passwordEncoder.matches(registrationDTO.getHouseholdPassword(), household.getPassword())) {
-                // Fallback for plain text passwords during migration
-                if (!registrationDTO.getHouseholdPassword().equals(household.getPassword())) {
-                     throw new IllegalArgumentException("Invalid household password");
-                }
-            }
-        } else if ("create".equals(registrationDTO.getHouseholdAction())) {
-            if (householdRepository.findByName(registrationDTO.getNewHouseholdName()).isPresent()) {
-                throw new IllegalArgumentException("Household name already exists");
-            }
-            household = new Household();
-            household.setName(registrationDTO.getNewHouseholdName());
-            household.setPassword(passwordEncoder.encode(registrationDTO.getNewHouseholdPassword()));
-            household = householdRepository.save(household);
+            throw new IllegalArgumentException("Username is already taken");
         }
 
         User user = new User();
         user.setUsername(registrationDTO.getUsername());
-        user.setEmail(registrationDTO.getEmail());
         user.setPassword(passwordEncoder.encode(registrationDTO.getPassword()));
-        
-        if (household != null) {
-            user.setHousehold(household);
-        }
+        // Set other fields from DTO as needed (e.g., email, household)
 
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 }

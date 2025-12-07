@@ -55,7 +55,6 @@ public class CalendarController {
         List<Event> events = eventRepository.findByHouseholdOrderByEventDateAsc(household);
         List<CalendarItem> calendarItems = calendarItemRepository.findByHousehold(household);
 
-        //Expand each CalendarItem into one instance per date it spans (inclusive)
         Map<String, List<CalendarItemInstance>> instancesByDate = new HashMap<>();
         for (CalendarItem ci : calendarItems) {
             if (ci.getDateStart() == null) continue;
@@ -74,7 +73,7 @@ public class CalendarController {
 
 
         model.addAttribute("events", events);
-        model.addAttribute("calendarItems", calendarItems); // keep for backward compatibility if needed
+        model.addAttribute("calendarItems", calendarItems);
         model.addAttribute("calendarItemInstances", instancesByDate);
         model.addAttribute("focusedDate", date != null ? date.toString() : null);
         model.addAttribute("noHousehold", false);
@@ -149,7 +148,6 @@ public class CalendarController {
         existing.setDateStart(form.getDateStart());
         existing.setDateEnd(form.getDateEnd());
         existing.setRepeatDuration(form.getRepeatDuration());
-        // household and creator kept unchanged
         calendarItemRepository.save(existing);
 
         ra.addFlashAttribute("message", "Calendar item updated");
