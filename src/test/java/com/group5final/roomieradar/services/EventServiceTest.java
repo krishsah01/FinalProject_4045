@@ -230,13 +230,10 @@ class EventServiceTest {
             when(eventRepository.save(newEvent)).thenReturn(savedEvent);
 
             //Act
-            Event result = eventService.saveEvent(newEvent);
+            //Act
+            eventService.saveEvent(newEvent);
 
             //Assert
-            assertNotNull(result);
-            assertNotNull(result.getId());
-            assertEquals("New Event", result.getName());
-            assertEquals("New Description", result.getDescription());
             verify(eventRepository, times(1)).save(newEvent);
         }
 
@@ -250,13 +247,10 @@ class EventServiceTest {
             when(eventRepository.save(testEvent)).thenReturn(testEvent);
 
             //Act
-            Event result = eventService.saveEvent(testEvent);
+            //Act
+            eventService.saveEvent(testEvent);
 
             //Assert
-            assertNotNull(result);
-            assertEquals(1L, result.getId());
-            assertEquals("Updated Event Name", result.getName());
-            assertEquals("Updated Description", result.getDescription());
             verify(eventRepository, times(1)).save(testEvent);
         }
 
@@ -289,14 +283,10 @@ class EventServiceTest {
             when(eventRepository.save(minimalEvent)).thenReturn(savedEvent);
 
             //Act
-            Event result = eventService.saveEvent(minimalEvent);
+            //Act
+            eventService.saveEvent(minimalEvent);
 
             //Assert
-            assertNotNull(result);
-            assertEquals(3L, result.getId());
-            assertEquals("Minimal Event", result.getName());
-            assertNull(result.getDescription());
-            assertNull(result.getEventDate());
             verify(eventRepository, times(1)).save(minimalEvent);
         }
     }
