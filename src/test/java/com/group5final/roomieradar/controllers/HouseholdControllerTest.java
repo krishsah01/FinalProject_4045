@@ -6,6 +6,7 @@ import com.group5final.roomieradar.entities.User;
 import com.group5final.roomieradar.repositories.HouseholdRepository;
 import com.group5final.roomieradar.repositories.UserRepository;
 import com.group5final.roomieradar.services.CurrentUserService;
+import com.group5final.roomieradar.services.HouseholdService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +29,7 @@ class HouseholdControllerTest {
     private UserRepository userRepository;
 
     @Mock
-    private HouseholdRepository householdRepository;
+    private HouseholdService householdService;
 
     @Mock
     private CurrentUserService currentUserService;
@@ -100,14 +101,15 @@ class HouseholdControllerTest {
         String view = householdController.joinHousehold("HouseA", "pw", model);
 
         assertEquals("redirect:/login", view);
-        verifyNoInteractions(householdRepository);
+        verifyNoInteractions(householdService);
         verifyNoInteractions(userRepository);
     }
 
     @Test
     void joinHousehold_invalidCredentials_returnsHouseholdWithError() {
         when(currentUserService.getCurrentUser()).thenReturn(Optional.of(sampleUser));
-        when(householdRepository.findByNameAndPassword("HouseA", "wrong")).thenReturn(Optional.empty());
+        doThrow(new IllegalArgumentException("Invalid household name or password"))
+                .when(householdService).joinHousehold("HouseA", "wrong", sampleUser);
 
         String view = householdController.joinHousehold("HouseA", "wrong", model);
 
@@ -121,15 +123,12 @@ class HouseholdControllerTest {
     @Test
     void joinHousehold_success_setsHouseholdAndSavesAndRedirects() {
         when(currentUserService.getCurrentUser()).thenReturn(Optional.of(sampleUser));
-        when(householdRepository.findByNameAndPassword("HouseA", "hpw")).thenReturn(Optional.of(sampleHousehold));
+        doNothing().when(householdService).joinHousehold("HouseA", "hpw", sampleUser);
 
         String view = householdController.joinHousehold("HouseA", "hpw", model);
 
         assertEquals("redirect:/household?msg=Joined", view);
-        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
-        verify(userRepository).save(captor.capture());
-        User saved = captor.getValue();
-        assertEquals(sampleHousehold, saved.getHousehold());
+        verify(householdService).joinHousehold("HouseA", "hpw", sampleUser);
     }
 
     @Test
@@ -139,7 +138,7 @@ class HouseholdControllerTest {
         String view = householdController.createHousehold("New", "pw", model);
 
         assertEquals("redirect:/login", view);
-        verifyNoInteractions(householdRepository);
+        verifyNoInteractions(householdService);
         verifyNoInteractions(userRepository);
     }
 
@@ -153,14 +152,15 @@ class HouseholdControllerTest {
         verify(model).addAttribute("error", "Household name and password are required");
         // controller may call household(...) which also adds "me"
         verify(model, atLeastOnce()).addAttribute("me", sampleUser);
-        verify(householdRepository, never()).save(any());
+        verifyNoInteractions(householdService);
         verify(userRepository, never()).save(any());
     }
 
     @Test
     void createHousehold_nameExists_returnsHouseholdWithError() {
         when(currentUserService.getCurrentUser()).thenReturn(Optional.of(sampleUser));
-        when(householdRepository.findByName("HouseA")).thenReturn(Optional.of(sampleHousehold));
+        doThrow(new IllegalArgumentException("Household name already exists"))
+                .when(householdService).createHousehold("HouseA", "hpw", sampleUser);
 
         String view = householdController.createHousehold("HouseA", "hpw", model);
 
@@ -168,7 +168,6 @@ class HouseholdControllerTest {
         verify(model).addAttribute("error", "Household name already exists");
         // controller may call household(...) which also adds "me"
         verify(model, atLeastOnce()).addAttribute("me", sampleUser);
-        verify(householdRepository, never()).save(any());
         verify(userRepository, never()).save(any());
     }
 
@@ -179,23 +178,13 @@ class HouseholdControllerTest {
         saved.setId(2L);
         saved.setName("NewHouse");
         saved.setPassword("npw");
-        when(householdRepository.findByName("NewHouse")).thenReturn(Optional.empty());
-        when(householdRepository.save(any())).thenReturn(saved);
+        
+        when(householdService.createHousehold("NewHouse", "npw", sampleUser)).thenReturn(saved);
 
         String view = householdController.createHousehold("NewHouse", "npw", model);
 
         assertEquals("redirect:/household?msg=Created", view);
 
-        ArgumentCaptor<Household> hhCaptor = ArgumentCaptor.forClass(Household.class);
-        verify(householdRepository).save(hhCaptor.capture());
-        Household created = hhCaptor.getValue();
-        assertEquals("NewHouse", created.getName());
-        assertEquals("npw", created.getPassword());
-
-        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
-        verify(userRepository).save(userCaptor.capture());
-        User savedUser = userCaptor.getValue();
-        assertNotNull(savedUser.getHousehold());
-        assertEquals(saved.getName(), savedUser.getHousehold().getName());
+        verify(householdService).createHousehold("NewHouse", "npw", sampleUser);
     }
 }
